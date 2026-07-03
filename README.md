@@ -124,7 +124,7 @@ npx playwright test tests/auth
 Run a specific test
 
 ```bash
-npx playwright test tests/auth/auth-01.ts
+npx playwright test tests/auth/login.spec.ts
 ```
 
 Run on Chromium
