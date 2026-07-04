@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../src/pages/LoginPage';
-import { DashboardPage } from '../../src/pages/DashboardPage';
-import { ForgotPasswordPage } from '../../src/pages/ForgotPasswordPage';
+import { LoginPage } from '../../src/pages/auth/LoginPage';
+import { DashboardPage } from '../../src/pages/auth/DashboardPage';
+import { ForgotPasswordPage } from '../../src/pages/auth/ForgotPasswordPage';
 const loginData = require('../../src/test-data/login.json');
 
 test.describe('Authentication', () => {
