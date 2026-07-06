@@ -5,6 +5,7 @@ export class DashboardPage extends BasePage {
     readonly txtDashboard: Locator;
     readonly userDropdown: Locator;
     readonly btnLogout: Locator;
+    readonly menuPIM: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -17,6 +18,10 @@ export class DashboardPage extends BasePage {
 
         this.btnLogout = page.getByRole('menuitem', {
             name: 'Logout'
+        });
+
+        this.menuPIM = page.getByRole('link', {
+            name: 'PIM'
         });
     }
 
@@ -31,5 +36,9 @@ export class DashboardPage extends BasePage {
     async logout(): Promise<void> {
         await this.openUserDropdown();
         await this.clickLogout();
+    }
+
+    async openPIM(): Promise<void> {
+        await this.click(this.menuPIM);
     }
 }
