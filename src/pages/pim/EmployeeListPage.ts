@@ -7,6 +7,8 @@ export class EmployeeListPage extends BasePage {
     readonly txtEmployeeName: Locator;
     readonly btnSearch: Locator;
     readonly tblEmployeeList: Locator;
+    readonly lblNoRecordsFound: Locator;
+    readonly employeeRows: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -22,6 +24,8 @@ export class EmployeeListPage extends BasePage {
         });
 
         this.tblEmployeeList = page.locator('.oxd-table-body');
+        this.employeeRows = page.locator('.oxd-table-card');
+        this.lblNoRecordsFound = page.locator('.orangehrm-horizontal-padding').getByText('No Records Found');
     }
 
     async clickAddEmployee(): Promise<void> {
@@ -50,5 +54,13 @@ export class EmployeeListPage extends BasePage {
     async verifyEmployeeExists(employee: Employee): Promise<void> {
         await expect(this.employeeRow(employee)).toBeVisible();
         await expect(this.tblEmployeeList).toContainText(employee.lastName);
+    }
+
+    async getEmployeeCount(): Promise<number> {
+        return await this.employeeRows.count();
+    }
+
+    async verifyNoRecordFound(): Promise<void> {
+        await expect(this.lblNoRecordsFound).toBeVisible();
     }
 }
