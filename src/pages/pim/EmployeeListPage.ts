@@ -1,20 +1,31 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from '../BasePage';
+import { Employee } from '../../models/Employee';
 
 export class EmployeeListPage extends BasePage {
     readonly btnAddEmployee: Locator;
     readonly txtEmployeeName: Locator;
     readonly btnSearch: Locator;
     readonly tblEmployeeList: Locator;
+    readonly lblNoRecordsFound: Locator;
+    readonly employeeRows: Locator;
 
     constructor(page: Page) {
         super(page);
+
         this.btnAddEmployee = page.getByRole('link', {
             name: 'Add Employee'
         });
-        this.txtEmployeeName = page.getByRole('textbox', {name: 'Type for hints...'}).first();
-        this.btnSearch = page.getByRole('button', {name: 'Search'});
+
+        this.txtEmployeeName = page.getByPlaceholder('Type for hints...').first();
+
+        this.btnSearch = page.getByRole('button', {
+            name: 'Search'
+        });
+
         this.tblEmployeeList = page.locator('.oxd-table-body');
+        this.employeeRows = page.locator('.oxd-table-card');
+        this.lblNoRecordsFound = page.locator('.orangehrm-horizontal-padding').getByText('No Records Found');
     }
 
     async clickAddEmployee(): Promise<void> {
@@ -34,10 +45,22 @@ export class EmployeeListPage extends BasePage {
         await this.clickSearch();
     }
 
-    employeeRow(fullName: string): Locator {
-        return this.page.locator('.oxd-table-card').filter({
-            hasText: fullName
-        });
+    employeeRow(employee: Employee): Locator {
+        return this.page
+            .locator('.oxd-table-card')
+            .filter({hasText: `${employee.firstName} ${employee.middleName}`});
     }
 
+    async verifyEmployeeExists(employee: Employee): Promise<void> {
+        await expect(this.employeeRow(employee)).toBeVisible();
+        await expect(this.tblEmployeeList).toContainText(employee.lastName);
+    }
+
+    async getEmployeeCount(): Promise<number> {
+        return await this.employeeRows.count();
+    }
+
+    async verifyNoRecordFound(): Promise<void> {
+        await expect(this.lblNoRecordsFound).toBeVisible();
+    }
 }

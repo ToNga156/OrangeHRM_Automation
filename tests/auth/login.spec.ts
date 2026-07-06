@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
+import loginData from '../../src/test-data/auth/login.json';
 import { LoginPage } from '../../src/pages/auth/LoginPage';
 import { DashboardPage } from '../../src/pages/auth/DashboardPage';
 import { ForgotPasswordPage } from '../../src/pages/auth/ForgotPasswordPage';
-import loginData from '../../src/test-data/auth/login.json';
 
 test.describe('Authentication Module', () => {
     test('TC-AUTH-01 Login with valid credentials', async ({ page }) => {
@@ -21,7 +21,7 @@ test.describe('Authentication Module', () => {
         });
 
         await test.step('Step 3: Verify Dashboard page is displayed.', async () => {
-            await expect(dashboardPage.txtDashboard).toHaveText('Dashboard');
+            await dashboardPage.verifyDashboardPage();
         });
     });
 
@@ -40,8 +40,7 @@ test.describe('Authentication Module', () => {
         });
 
         await test.step('Step 3: Verify Invalid credentials message is displayed.', async () => {
-            await expect(loginPage.lblInvalidCredentials)
-                .toHaveText('Invalid credentials');
+            await loginPage.verifyInvalidCredentials();
         });
     });
 
@@ -52,12 +51,12 @@ test.describe('Authentication Module', () => {
             await loginPage.open();
         });
 
-        await test.step('Step 2: Click Login without entering username and password.', async () => {
+        await test.step('Step 2: Click Login without entering credentials.', async () => {
             await loginPage.clickLogin();
         });
 
         await test.step('Step 3: Verify Required validation messages are displayed.', async () => {
-            await expect(loginPage.lblRequired).toHaveCount(2);
+            await loginPage.verifyRequiredFields(2);
         });
     });
 
@@ -79,8 +78,7 @@ test.describe('Authentication Module', () => {
         });
 
         await test.step('Step 4: Verify Required validation message is displayed.', async () => {
-            await expect(loginPage.lblRequired)
-                .toHaveText('Required');
+            await loginPage.verifyRequiredFields(1);
         });
     });
 
@@ -104,13 +102,13 @@ test.describe('Authentication Module', () => {
         });
 
         await test.step('Step 4: Verify Login page is displayed.', async () => {
-            await expect(loginPage.txtUsername).toBeVisible();
+            await loginPage.verifyLoginPage();
         });
     });
 
     test('TC-AUTH-06 Forgot Password with registered username', async ({ page }) => {
         const loginPage = new LoginPage(page);
-        const forgotPage = new ForgotPasswordPage(page);
+        const forgotPasswordPage = new ForgotPasswordPage(page);
 
         await test.step('Step 1: Open Login page.', async () => {
             await loginPage.open();
@@ -120,19 +118,18 @@ test.describe('Authentication Module', () => {
             await loginPage.clickForgotPassword();
         });
 
-        await test.step('Step 3: Enter registered username.', async () => {
-            await forgotPage.resetPassword('Admin');
+        await test.step('Step 3: Enter registered username and submit.', async () => {
+            await forgotPasswordPage.resetPassword('Admin');
         });
 
         await test.step('Step 4: Verify reset password success message is displayed.', async () => {
-            await expect(forgotPage.lblResetSuccess)
-                .toHaveText('Reset Password link sent successfully');
+            await forgotPasswordPage.verifyResetPasswordSuccess();
         });
     });
 
     test('TC-AUTH-07 Forgot Password with unregistered username', async ({ page }) => {
         const loginPage = new LoginPage(page);
-        const forgotPage = new ForgotPasswordPage(page);
+        const forgotPasswordPage = new ForgotPasswordPage(page);
 
         await test.step('Step 1: Open Login page.', async () => {
             await loginPage.open();
@@ -142,13 +139,12 @@ test.describe('Authentication Module', () => {
             await loginPage.clickForgotPassword();
         });
 
-        await test.step('Step 3: Enter an unregistered username.', async () => {
-            await forgotPage.resetPassword('abcxyz123');
+        await test.step('Step 3: Enter an unregistered username and submit.', async () => {
+            await forgotPasswordPage.resetPassword('abcxyz123');
         });
 
         await test.step('Step 4: Verify reset password success message is displayed.', async () => {
-            await expect(forgotPage.lblResetSuccess)
-                .toHaveText('Reset Password link sent successfully');
+            await forgotPasswordPage.verifyResetPasswordSuccess();
         });
     });
 });

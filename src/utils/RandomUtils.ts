@@ -1,30 +1,34 @@
+import { Employee } from '../models/Employee';
+
 export class RandomUtils {
-    static randomNumber(min: number = 1000, max: number = 9999): number {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    static timestamp(): number {
-        return Date.now();
-    }
-
-    static unique(prefix: string): string {
-        return `${prefix}${this.timestamp()}`;
+    private static randomNumber(length: number): string {
+        return Math.random()
+            .toString()
+            .substring(2, 2 + length);
     }
 
     static firstName(): string {
-        return `John${this.randomNumber()}`;
+        return `John${this.randomNumber(4)}`;
     }
 
     static middleName(): string {
-        return `David${this.randomNumber()}`;
+        return `David${this.randomNumber(4)}`;
     }
 
     static lastName(): string {
-        return `Smith${this.randomNumber()}`;
+        return `Smith${this.randomNumber(4)}`;
     }
 
     static employeeId(): string {
-        return this.randomNumber(100000, 999999).toString();
+        return this.randomNumber(6);
     }
 
+    static employee(): Employee {
+        return {
+            firstName: this.firstName(),
+            middleName: this.middleName(),
+            lastName: this.lastName(),
+            employeeId: this.employeeId()
+        };
+    }
 }
