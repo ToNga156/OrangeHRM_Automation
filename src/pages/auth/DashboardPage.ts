@@ -6,22 +6,15 @@ export class DashboardPage extends BasePage {
     readonly menuPIM: Locator;
     readonly userDropdown: Locator;
     readonly btnLogout: Locator;
+    readonly lnkLeave: Locator;
 
     constructor(page: Page) {
         super(page);
-        this.txtDashboard = page.getByRole('heading', {
-            name: 'Dashboard'
-        });
-
-        this.menuPIM = page.getByRole('link', {
-            name: 'PIM'
-        });
-
+        this.txtDashboard = page.getByRole('heading', {name: 'Dashboard'});
+        this.menuPIM = page.getByRole('link', {name: 'PIM'});
         this.userDropdown = page.locator('.oxd-userdropdown-tab');
-
-        this.btnLogout = page.getByRole('menuitem', {
-            name: 'Logout'
-        });
+        this.btnLogout = page.getByRole('menuitem', {name: 'Logout'});
+        this.lnkLeave = page.getByRole('link', {name: 'Leave'});
     }
 
     async openPIM(): Promise<void> {
@@ -40,5 +33,9 @@ export class DashboardPage extends BasePage {
     async verifyDashboardPage(): Promise<void> {
         await expect(this.page).toHaveURL(/dashboard/);
         await expect(this.txtDashboard).toBeVisible();
+    }
+
+    async openLeave(): Promise<void> {
+        await this.click(this.lnkLeave);
     }
 }

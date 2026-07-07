@@ -13,27 +13,12 @@ export class EmployeeDetailPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.txtPersonalDetails = page.getByRole('heading', {
-            name: 'Personal Details'
-        });
-
-        this.txtFirstName = page.getByRole('textbox', {
-            name: 'First Name'
-        });
-
-        this.txtMiddleName = page.getByRole('textbox', {
-            name: 'Middle Name'
-        });
-
-        this.txtLastName = page.getByRole('textbox', {
-            name: 'Last Name'
-        });
-
+        this.txtPersonalDetails = page.getByRole('heading', {name: 'Personal Details'});
+        this.txtFirstName = page.getByRole('textbox', {name: 'First Name'});
+        this.txtMiddleName = page.getByRole('textbox', {name: 'Middle Name'});
+        this.txtLastName = page.getByRole('textbox', {name: 'Last Name'});
         this.txtEmployeeId = page.getByRole('textbox').nth(4);
-
-        this.tabJob = page.getByRole('link', {
-            name: 'Job'
-        });
+        this.tabJob = page.getByRole('link', {name: 'Job'});
     }
 
     async openJobTab(): Promise<void> {
