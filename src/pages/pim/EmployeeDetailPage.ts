@@ -8,6 +8,7 @@ export class EmployeeDetailPage extends BasePage {
     readonly txtMiddleName: Locator;
     readonly txtLastName: Locator;
     readonly txtEmployeeId: Locator;
+    readonly tabJob: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -29,6 +30,14 @@ export class EmployeeDetailPage extends BasePage {
         });
 
         this.txtEmployeeId = page.getByRole('textbox').nth(4);
+
+        this.tabJob = page.getByRole('link', {
+            name: 'Job'
+        });
+    }
+
+    async openJobTab(): Promise<void> {
+        await this.click(this.tabJob);
     }
 
     async verifyPersonalDetailsPage(): Promise<void> {
