@@ -9,6 +9,8 @@ export class EmployeeListPage extends BasePage {
     readonly tblEmployeeList: Locator;
     readonly lblNoRecordsFound: Locator;
     readonly employeeRows: Locator;
+    readonly btnDelete: Locator;
+    readonly btnConfirmDelete: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -26,6 +28,10 @@ export class EmployeeListPage extends BasePage {
         this.tblEmployeeList = page.locator('.oxd-table-body');
         this.employeeRows = page.locator('.oxd-table-card');
         this.lblNoRecordsFound = page.locator('.orangehrm-horizontal-padding').getByText('No Records Found');
+        this.btnDelete = page.locator('.bi-trash');
+        this.btnConfirmDelete = page.getByRole('button', {
+            name: 'Yes, Delete'
+        });
     }
 
     async clickAddEmployee(): Promise<void> {
@@ -62,5 +68,22 @@ export class EmployeeListPage extends BasePage {
 
     async verifyNoRecordFound(): Promise<void> {
         await expect(this.lblNoRecordsFound).toBeVisible();
+    }
+
+    async deleteEmployee(employee: Employee): Promise<void> {
+        await this.employeeRow(employee)
+            .locator('.bi-trash')
+            .click();
+
+        await this.click(this.btnConfirmDelete);
+
+    }
+
+    async verifyEmployeeDeleted(employee: Employee): Promise<void> {
+
+        await this.searchEmployee(employee.firstName);
+
+        await this.verifyNoRecordFound();
+
     }
 }
