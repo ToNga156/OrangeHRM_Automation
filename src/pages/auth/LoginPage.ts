@@ -40,6 +40,7 @@ export class LoginPage extends BasePage {
         await this.enterUsername(username);
         await this.enterPassword(password);
         await this.clickLogin();
+        // await this.page.waitForURL(/dashboard/);
     }
 
     async clickForgotPassword(): Promise<void> {

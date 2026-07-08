@@ -15,23 +15,14 @@ export class EmployeeListPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.btnAddEmployee = page.getByRole('link', {
-            name: 'Add Employee'
-        });
-
+        this.btnAddEmployee = page.getByRole('link', {name: 'Add Employee'});
         this.txtEmployeeName = page.getByPlaceholder('Type for hints...').first();
-
-        this.btnSearch = page.getByRole('button', {
-            name: 'Search'
-        });
-
+        this.btnSearch = page.getByRole('button', {name: 'Search'});
         this.tblEmployeeList = page.locator('.oxd-table-body');
         this.employeeRows = page.locator('.oxd-table-card');
         this.lblNoRecordsFound = page.locator('.orangehrm-horizontal-padding').getByText('No Records Found');
         this.btnDelete = page.locator('.bi-trash');
-        this.btnConfirmDelete = page.getByRole('button', {
-            name: 'Yes, Delete'
-        });
+        this.btnConfirmDelete = page.getByRole('button', {name: 'Yes, Delete'});
     }
 
     async clickAddEmployee(): Promise<void> {
@@ -74,16 +65,11 @@ export class EmployeeListPage extends BasePage {
         await this.employeeRow(employee)
             .locator('.bi-trash')
             .click();
-
         await this.click(this.btnConfirmDelete);
-
     }
 
     async verifyEmployeeDeleted(employee: Employee): Promise<void> {
-
         await this.searchEmployee(employee.firstName);
-
         await this.verifyNoRecordFound();
-
     }
 }
