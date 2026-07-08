@@ -8,6 +8,8 @@
         "allowSyntheticDefaultImports": true,
         "ignoreDeprecations": "6.0",
         "strict": true,
-        "types": ["node"]
+        "types": ["node"],
+        "resolveJsonModule": true,
+        "esModuleInterop": true
     }
 }

@@ -1,14 +1,19 @@
-import { Locator, Page } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { expect, Locator, Page } from '@playwright/test';
+import { BasePage } from '../BasePage';
 
 export class ForgotPasswordPage extends BasePage {
     readonly txtUsername: Locator;
     readonly btnResetPassword: Locator;
     readonly btnCancel: Locator;
+    readonly lblForgotPassword: Locator;
     readonly lblResetSuccess: Locator;
 
     constructor(page: Page) {
         super(page);
+
+        this.lblForgotPassword = page.getByRole('heading', {
+            name: 'Reset Password'
+        });
 
         this.txtUsername = page.locator('input[name="username"]');
 
@@ -20,7 +25,7 @@ export class ForgotPasswordPage extends BasePage {
             name: 'Cancel'
         });
 
-        this.lblResetSuccess = page.locator('.orangehrm-card-container h6');
+        this.lblResetSuccess = page.locator('.oxd-text--h6');
     }
 
     async enterUsername(username: string): Promise<void> {
@@ -31,9 +36,21 @@ export class ForgotPasswordPage extends BasePage {
         await this.click(this.btnResetPassword);
     }
 
+    async clickCancel(): Promise<void> {
+        await this.click(this.btnCancel);
+    }
+
     async resetPassword(username: string): Promise<void> {
         await this.enterUsername(username);
         await this.clickResetPassword();
     }
 
+    async verifyForgotPasswordPage(): Promise<void> {
+        await expect(this.page).toHaveURL(/requestPasswordResetCode/);
+        await expect(this.lblForgotPassword).toBeVisible();
+    }
+
+    async verifyResetPasswordSuccess(): Promise<void> {
+        await expect(this.lblResetSuccess).toContainText('Reset Password link sent successfully');
+    }
 }

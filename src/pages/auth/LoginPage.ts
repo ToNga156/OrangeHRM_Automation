@@ -1,6 +1,6 @@
-import { Locator, Page } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { config } from '../utils/config';
+import { expect, Locator, Page } from '@playwright/test';
+import { BasePage } from '../BasePage';
+import { config } from '../../utils/config';
 
 export class LoginPage extends BasePage {
     readonly txtUsername: Locator;
@@ -40,9 +40,24 @@ export class LoginPage extends BasePage {
         await this.enterUsername(username);
         await this.enterPassword(password);
         await this.clickLogin();
+        // await this.page.waitForURL(/dashboard/);
     }
 
     async clickForgotPassword(): Promise<void> {
         await this.click(this.lnkForgotPassword);
+    }
+
+    async verifyLoginPage(): Promise<void> {
+        await expect(this.txtUsername).toBeVisible();
+        await expect(this.txtPassword).toBeVisible();
+        await expect(this.btnLogin).toBeVisible();
+    }
+
+    async verifyInvalidCredentials(): Promise<void> {
+        await expect(this.lblInvalidCredentials).toHaveText('Invalid credentials');
+    }
+
+    async verifyRequiredFields(expectedCount: number): Promise<void> {
+        await expect(this.lblRequired).toHaveCount(expectedCount);
     }
 }
