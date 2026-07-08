@@ -26,7 +26,10 @@ export class EmployeeDetailPage extends BasePage {
     }
 
     async verifyPersonalDetailsPage(): Promise<void> {
-        await expect(this.page).toHaveURL(/viewPersonalDetails/);
+        await Promise.all([
+            this.page.waitForURL(/viewPersonalDetails/, { timeout: 10000 }),
+        ]);
+        // await expect(this.page).toHaveURL(/viewPersonalDetails/);
         await expect(this.txtPersonalDetails).toBeVisible();
     }
 
