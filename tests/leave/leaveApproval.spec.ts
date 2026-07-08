@@ -1,21 +1,8 @@
-import {test} from '@playwright/test';
-import loginData from '../../src/test-data/auth/login.json';
-import {LoginPage} from '../../src/pages/auth/LoginPage';
+import { test, expect } from '../../src/fixtures/authenticated';
 import {DashboardPage} from '../../src/pages/auth/DashboardPage';
 import {LeaveListPage} from '../../src/pages/leave/LeaveListPage';
 
 test.describe('Leave Approval Module', () => {
-    test.beforeEach(async ({page}) => {
-        const loginPage = new LoginPage(page);
-        await test.step('Step 1: Login with valid Admin credentials.', async () => {
-            await loginPage.open();
-            await loginPage.login(
-                loginData.validUser.username,
-                loginData.validUser.password
-            );
-        });
-    });
-
     test('TC-LV-04 Admin approves a pending leave request', async ({page}) => {
         const dashboardPage = new DashboardPage(page);
         const leaveListPage = new LeaveListPage(page);

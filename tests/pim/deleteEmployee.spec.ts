@@ -1,6 +1,4 @@
-import { test } from '@playwright/test';
-import loginData from '../../src/test-data/auth/login.json';
-import { LoginPage } from '../../src/pages/auth/LoginPage';
+import { test, expect } from '../../src/fixtures/authenticated';
 import { DashboardPage } from '../../src/pages/auth/DashboardPage';
 import { EmployeeListPage } from '../../src/pages/pim/EmployeeListPage';
 import { AddEmployeePage } from '../../src/pages/pim/AddEmployeePage';
@@ -8,15 +6,6 @@ import { EmployeeDetailPage } from '../../src/pages/pim/EmployeeDetailPage';
 import { RandomUtils } from '../../src/utils/RandomUtils';
 
 test.describe('Delete Employee', () => {
-    test.beforeEach(async ({ page }) => {
-        const loginPage = new LoginPage(page);
-        await loginPage.open();
-        await loginPage.login(
-            loginData.validUser.username,
-            loginData.validUser.password
-        );
-    });
-
     test('TC-PIM-07 Delete employee', async ({ page }) => {
         const dashboardPage = new DashboardPage(page);
         const employeeListPage = new EmployeeListPage(page);

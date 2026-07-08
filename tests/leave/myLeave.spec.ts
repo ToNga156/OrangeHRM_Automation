@@ -1,22 +1,9 @@
-import {test} from '@playwright/test';
-import loginData from '../../src/test-data/auth/login.json';
-import {LoginPage} from '../../src/pages/auth/LoginPage';
+import { test, expect } from '../../src/fixtures/authenticated';
 import {DashboardPage} from '../../src/pages/auth/DashboardPage';
 import {MyLeavePage} from '../../src/pages/leave/MyLeavePage';
 import {LeaveUtils} from '../../src/utils/LeaveUtils';
 
 test.describe('My Leave Module', () => {
-    test.beforeEach(async ({page}) => {
-        const loginPage = new LoginPage(page);
-        await test.step('Step 1: Login with valid credentials.', async () => {
-            await loginPage.open();
-            await loginPage.login(
-                loginData.validUser.username,
-                loginData.validUser.password
-            );
-        });
-    });
-
     test('TC-LV-06 Employee cancels an approved leave', async ({page}) => {
         const dashboardPage = new DashboardPage(page);
         const myLeavePage = new MyLeavePage(page);
