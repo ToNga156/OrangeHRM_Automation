@@ -3,19 +3,16 @@ import { BasePage } from '../BasePage';
 import { Leave } from '../../models/Leave';
 
 export class ApplyLeavePage extends BasePage {
-
     readonly menuApply: Locator;
-
     readonly leaveTypeDropdown: Locator;
     readonly leaveTypeOptions: Locator;
-
     readonly txtFromDate: Locator;
     readonly txtToDate: Locator;
-    readonly txtDuration: Locator;
+    readonly durationDropdown: Locator;
+    readonly partialDaysDropdown: Locator;
+    readonly dropdownOptions: Locator;
     readonly txtComment: Locator;
-
     readonly btnApply: Locator;
-
     readonly toastSuccess: Locator;
     readonly lblSubmitFailed: Locator;
     readonly lblToDateValidation: Locator;
@@ -23,44 +20,19 @@ export class ApplyLeavePage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.menuApply = page.getByRole('link', {
-            name: 'Apply'
-        });
-
-        this.leaveTypeDropdown = page.locator(
-            '.oxd-input-group:has-text("Leave Type") .oxd-select-text'
-        );
-
-        this.leaveTypeOptions = page.locator(
-            '.oxd-select-dropdown .oxd-select-option'
-        );
-
-        this.txtFromDate = page.getByRole('textbox', {
-            name: 'yyyy-dd-mm'
-        }).first();
-
-        this.txtToDate = page.getByRole('textbox', {
-            name: 'yyyy-dd-mm'
-        }).nth(1);
-
-        this.txtDuration = page.locator(
-            '.oxd-input-group:has-text("Duration") .oxd-select-text-input'
-        );
-
+        this.menuApply = page.getByRole('link', {name: 'Apply'});
+        this.leaveTypeDropdown = page.locator('.oxd-input-group:has-text("Leave Type") .oxd-select-text');
+        this.leaveTypeOptions = page.locator('.oxd-select-dropdown .oxd-select-option');
+        this.txtFromDate = page.getByRole('textbox', {name: 'yyyy-dd-mm'}).first();
+        this.txtToDate = page.getByRole('textbox', {name: 'yyyy-dd-mm'}).nth(1);
+        this.durationDropdown = page.locator('.oxd-input-group:has-text("Duration") .oxd-select-text-input');
+        this.partialDaysDropdown = page.locator('.oxd-input-group:has-text("Partial Days") .oxd-select-text');
+        this.dropdownOptions = page.locator('.oxd-select-dropdown .oxd-select-option');
         this.txtComment = page.locator('textarea');
-
-        this.btnApply = page.getByRole('button', {
-            name: 'Apply'
-        });
-
+        this.btnApply = page.getByRole('button', {name: 'Apply'});
         this.toastSuccess = page.locator('.oxd-toast');
-
-        this.lblSubmitFailed = page.getByText(
-            'Warning to Submit Fail'
-        );
-        this.lblToDateValidation = page.getByText(
-            'To date should be after from date'
-        );
+        this.lblSubmitFailed = page.getByText('Warning to Submit Fail');
+        this.lblToDateValidation = page.getByText('To date should be after from date');
     }
 
     async openApplyPage(): Promise<void> {
@@ -68,110 +40,65 @@ export class ApplyLeavePage extends BasePage {
     }
 
     async selectLeaveType(type: string): Promise<void> {
-
         await this.click(this.leaveTypeDropdown);
-
-        await this.leaveTypeOptions
-            .first()
-            .waitFor({
-                state: 'visible'
-            });
-
-        await this.leaveTypeOptions
-            .filter({
-                hasText: type
-            })
-            .first()
-            .click();
+        await this.leaveTypeOptions.first().waitFor({state: 'visible'});
+        await this.leaveTypeOptions.filter({hasText: type}).first().click();
     }
 
     async enterFromDate(date: string): Promise<void> {
-
         await this.txtFromDate.clear();
-
-        await this.fill(
-            this.txtFromDate,
-            date
-        );
+        await this.fill(this.txtFromDate, date);
     }
 
     async enterToDate(date: string): Promise<void> {
-
         await this.txtToDate.clear();
-
-        await this.fill(
-            this.txtToDate,
-            date
-        );
+        await this.fill(this.txtToDate, date);
     }
 
-    async verifyDefaultDuration(): Promise<void> {
+    async handleLeaveDuration(): Promise<void> {
+        if (await this.durationDropdown.isVisible()) {
+            await expect(this.durationDropdown).toHaveText('Full Day');
+            return;
+        }
 
-        await expect(this.txtDuration)
-            .toHaveText('Full Day');
-
+        if (await this.partialDaysDropdown.isVisible()) {
+            await this.click(this.partialDaysDropdown);
+            await this.dropdownOptions.filter({hasText: 'All Days'}).first().click();
+        }
     }
 
     async enterComment(comment: string): Promise<void> {
-
-        await this.fill(
-            this.txtComment,
-            comment
-        );
+        await this.fill(this.txtComment,comment);
     }
 
     async clickApply(): Promise<void> {
-
         await this.click(this.btnApply);
     }
 
     async applyLeave(leave: Leave): Promise<void> {
-
-        await this.selectLeaveType(
-            leave.leaveType
-        );
-
-        await this.enterFromDate(
-            leave.fromDate
-        );
-
-        await this.enterToDate(
-            leave.toDate
-        );
-
-        await this.verifyDefaultDuration();
-
-        await this.enterComment(
-            leave.comment
-        );
-
+        await this.selectLeaveType(leave.leaveType);
+        await this.enterFromDate(leave.fromDate);
+        await this.enterToDate(leave.toDate);
+        await this.handleLeaveDuration();
+        await this.enterComment(leave.comment);
         await this.clickApply();
     }
 
     async createLeaveRequest(leave: Leave): Promise<void> {
-
         await this.openApplyPage();
-
         await this.applyLeave(leave);
-
         await this.verifyLeaveAppliedSuccessfully();
     }
 
     async verifyLeaveAppliedSuccessfully(): Promise<void> {
-
-        await expect(this.toastSuccess)
-            .toContainText('Success');
+        await expect(this.toastSuccess).toContainText('Success');
     }
 
     async verifySubmitFailed(): Promise<void> {
-
-        await expect(this.lblSubmitFailed)
-            .toBeVisible();
+        await expect(this.lblSubmitFailed).toBeVisible();
     }
 
     async verifyToDateValidation(): Promise<void> {
-        await expect(this.lblToDateValidation)
-            .toBeVisible();
-
+        await expect(this.lblToDateValidation).toBeVisible();
     }
 }
