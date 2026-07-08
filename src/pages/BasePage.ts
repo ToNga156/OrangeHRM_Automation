@@ -15,6 +15,10 @@ export class BasePage {
         await locator.click();
     }
 
+    async hover(locator: Locator): Promise<void> {
+        await locator.hover();
+    }
+
     async fill(locator: Locator, value: string): Promise<void> {
         await locator.fill(value);
     }
