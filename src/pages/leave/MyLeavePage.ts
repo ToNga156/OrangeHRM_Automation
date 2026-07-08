@@ -28,9 +28,7 @@ export class MyLeavePage extends BasePage {
         this.btnCancel = page.getByRole('button', {name: 'Cancel'});
         this.btnConfirmCancel = page.getByRole('button', {name: 'Yes, Confirm'});
         this.toastSuccess = page.locator('.oxd-toast');
-        this.lblNoRecordsFound = page
-            .locator('.orangehrm-horizontal-padding')
-            .getByText('No Records Found');
+        this.lblNoRecordsFound = page.getByText('No Records Found', { exact: true });
     }
 
     async openMyLeave(): Promise<void> {
